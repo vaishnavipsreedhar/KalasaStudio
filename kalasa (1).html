@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Swipe Image Carousel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hide scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .dragging {
+            transition: none !important; /* Disable transition while dragging */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-900 overflow-hidden">
+    <div class="w-full h-screen relative overflow-hidden">
+        <div 
+            id="scrollContainer"
+            class="flex h-full absolute top-0 left-0 transition-transform duration-700 ease-in-out cursor-grab active:cursor-grabbing"
+        >
+            <!-- Duplicate first image at end for seamless looping -->
+            <div class="flex-shrink-0 h-screen w-screen">
+                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&h=1080" 
+                     alt="Slide 1" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-shrink-0 h-screen w-screen">
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1920&h=1080" 
+                     alt="Slide 2" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-shrink-0 h-screen w-screen">
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&h=1080" 
+                     alt="Slide 3" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-shrink-0 h-screen w-screen">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&h=1080" 
+                     alt="Slide 4" class="w-full h-full object-cover">
+            </div>
+            <!-- Extra first image at the end for smooth transition -->
+            <div class="flex-shrink-0 h-screen w-screen">
+                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&h=1080" 
+                     alt="Slide 1 Duplicate" class="w-full h-full object-cover">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollContainer = document.getElementById('scrollContainer');
+            const totalImages = scrollContainer.children.length;
+            const viewportWidth = window.innerWidth;
+            let currentIndex = 0;
+            let isDragging = false, startX = 0, moveX = 0;
+            let autoSlideInterval;
+
+            function scrollToIndex(index) {
+                scrollContainer.style.transition = "transform 0.7s ease-out";
+                scrollContainer.style.transform = `translateX(${-index * viewportWidth}px)`;
+            }
+
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(() => {
+                    currentIndex++;
+                    scrollToIndex(currentIndex);
+
+                    // Reset for infinite loop
+                    if (currentIndex === totalImages - 1) {
+                        setTimeout(() => {
+                            scrollContainer.style.transition = "none";
+                            scrollContainer.style.transform = "translateX(0)";
+                            currentIndex = 0;
+                        }, 700);
+                    }
+                }, 3000);
+            }
+
+            startAutoSlide(); // Start auto-slide
+
+            // Drag functionality
+            scrollContainer.addEventListener("mousedown", (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                moveX = 0;
+                scrollContainer.classList.add("dragging");
+                clearInterval(autoSlideInterval); // Pause auto-slide while dragging
+            });
+
+            scrollContainer.addEventListener("mousemove", (e) => {
+                if (!isDragging) return;
+                moveX = e.clientX - startX;
+                scrollContainer.style.transform = `translateX(${-currentIndex * viewportWidth + moveX}px)`;
+            });
+
+            scrollContainer.addEventListener("mouseup", () => {
+                if (!isDragging) return;
+                isDragging = false;
+                scrollContainer.classList.remove("dragging");
+
+                if (Math.abs(moveX) > 100) {
+                    // Swipe left or right based on movement
+                    if (moveX < 0 && currentIndex < totalImages - 1) {
+                        currentIndex++;
+                    } else if (moveX > 0 && currentIndex > 0) {
+                        currentIndex--;
+                    }
+                }
+
+                // Smooth landing effect
+                scrollToIndex(currentIndex);
+
+                // Restart auto-slide after manual swipe
+                startAutoSlide();
+            });
+
+            // Handle case when mouse leaves screen while dragging
+            scrollContainer.addEventListener("mouseleave", () => {
+                if (isDragging) {
+                    scrollContainer.dispatchEvent(new Event("mouseup"));
+                }
+            });
+
+            // Touch events for mobile
+            scrollContainer.addEventListener("touchstart", (e) => {
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                moveX = 0;
+                clearInterval(autoSlideInterval);
+            });
+
+            scrollContainer.addEventListener("touchmove", (e) => {
+                if (!isDragging) return;
+                moveX = e.touches[0].clientX - startX;
+                scrollContainer.style.transform = `translateX(${-currentIndex * viewportWidth + moveX}px)`;
+            });
+
+            scrollContainer.addEventListener("touchend", () => {
+                if (!isDragging) return;
+                isDragging = false;
+
+                if (Math.abs(moveX) > 100) {
+                    if (moveX < 0 && currentIndex < totalImages - 1) {
+                        currentIndex++;
+                    } else if (moveX > 0 && currentIndex > 0) {
+                        currentIndex--;
+                    }
+                }
+
+                scrollToIndex(currentIndex);
+                startAutoSlide();
+            });
+        });
+    </script>
+</body>
+</html>
