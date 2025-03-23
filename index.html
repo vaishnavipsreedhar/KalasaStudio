@@ -73,33 +73,30 @@
             animation: popOut 0.8s ease-out forwards;
         }
 
-        /* Custom Cursor */
-        body {
-            cursor: none;
-        }
+       
+        /* Use default cursor for fallback */
+body {
+    cursor: none; /* Hide the default cursor */
+}
 
-        .cursor {
-            position: fixed;
-            width: 15px;
-            height: 15px;
-            background-color: rgba(255, 0, 0, 0.8);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s ease-out;
-        }
+/* Custom Cursor */
+.cursor {
+    position: fixed;
+    width: 20px;
+    height: 30px;
+    clip-path: polygon(0% 0%, 100% 50%, 50% 50%, 70% 100%, 40% 80%, 0% 100%);
+    background-color: black;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
 
-        .trail {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background-color: rgba(255, 165, 0, 0.7);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            opacity: 0.8;
-            animation: fadeOut 0.5s linear forwards;
-        }
+/* JavaScript to move the cursor */
+document.addEventListener("mousemove", (e) => {
+    const cursor = document.querySelector(".cursor");
+    cursor.style.left = `${e.clientX}px`;
+    cursor.style.top = `${e.clientY}px`;
+});
+
 
         @keyframes fadeOut {
             from {
