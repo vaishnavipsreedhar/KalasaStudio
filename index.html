@@ -74,28 +74,16 @@
         }
 
        
-        /* Use default cursor for fallback */
+       /* Default Cursor */
 body {
-    cursor: none; /* Hide the default cursor */
+    cursor: default; /* Uses the system's default cursor */
 }
 
-/* Custom Cursor */
-.cursor {
-    position: fixed;
-    width: 20px;
-    height: 30px;
-    clip-path: polygon(0% 0%, 100% 50%, 50% 50%, 70% 100%, 40% 80%, 0% 100%);
-    background-color: black;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
+/* If you want to use a pointer (hand cursor) on clickable elements */
+button, a {
+    cursor: pointer;
 }
 
-/* JavaScript to move the cursor */
-document.addEventListener("mousemove", (e) => {
-    const cursor = document.querySelector(".cursor");
-    cursor.style.left = `${e.clientX}px`;
-    cursor.style.top = `${e.clientY}px`;
-});
 
 
         @keyframes fadeOut {
