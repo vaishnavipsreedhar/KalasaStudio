@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -73,33 +73,9 @@
             animation: popOut 0.8s ease-out forwards;
         }
 
-        /* Custom Cursor */
         body {
-            cursor: none;
-        }
-
-        .cursor {
-            position: fixed;
-            width: 15px;
-            height: 15px;
-            background-color: rgba(255, 0, 0, 0.8);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s ease-out;
-        }
-
-        .trail {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background-color: rgba(255, 165, 0, 0.7);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            opacity: 0.8;
-            animation: fadeOut 0.5s linear forwards;
-        }
+           cursor: default; /* Uses the system's default cursor */
+         }
 
         @keyframes fadeOut {
             from {
