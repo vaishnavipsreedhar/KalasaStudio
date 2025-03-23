@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smooth Swipe Image Carousel with Shop by Category</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         /* Hide scrollbar */
         .scrollbar-hide::-webkit-scrollbar {
@@ -17,80 +19,217 @@
         }
 
         .dragging {
-            transition: none !important; /* Disable transition while dragging */
+            transition: none !important;
+            /* Disable transition while dragging */
         }
 
-             /* Responsive container and image styles */
-             #scrollContainer {
-            height: 100vh; /* Full viewport height as base */
-            width: 100%; /* Full width of container */
+        /* Responsive container and image styles */
+        #scrollContainer {
+            height: 100vh;
+            /* Full viewport height as base */
+            width: 100%;
+            /* Full width of container */
         }
 
         .carousel-slide {
             flex-shrink: 0;
-            width: 100vw; /* Full viewport width per slide */
-            height: 100vh; /* Full viewport height per slide */
+            width: 100vw;
+            /* Full viewport width per slide */
+            height: 100vh;
+            /* Full viewport height per slide */
         }
 
         .carousel-slide img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures images scale while maintaining aspect ratio */
+            object-fit: cover;
+            /* Ensures images scale while maintaining aspect ratio */
         }
 
         /* Media queries for smaller screens */
         @media (max-width: 768px) {
             .carousel-slide {
-                height: 50vh; /* Adjust height for smaller screens */
+                height: 50vh;
+                /* Adjust height for smaller screens */
             }
         }
 
         @media (max-width: 480px) {
             .carousel-slide {
-                height: 40vh; /* Further adjust for very small screens */
+                height: 40vh;
+                /* Further adjust for very small screens */
             }
         }
+
+        /* SHOP BY CATEGORY */
+          /* Animation Keyframe */
+          @keyframes popOut {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Apply Animation to Heading */
+        .shop-heading {
+            animation: popOut 0.8s ease-out forwards;
+        }
+
+        /* Custom Cursor */
+        body {
+            cursor: none;
+        }
+
+        .cursor {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+        }
+
+        .trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background-color: rgba(255, 165, 0, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+            animation: fadeOut 0.5s linear forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 0.8;
+            }
+            to {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        /* VIDEOS SECTION */
+        .custom-heading {
+            color: #6B4E71; /* Deep plum for headings */
+        }
+        .custom-text {
+            color: #4A4A4A; /* Dark gray for body text */
+        }
+        .custom-price {
+            color: #D4AF37; /* Gold for price */
+        }
+        .card-hover:hover {
+            background-color: #D3BFFA; /* Soft lavender on hover */
+            transition: background-color 0.3s ease;
+        }
+
+        /*************************************** BEST SELLER SECTION ***************************************************/
+
+        .custom-heading {
+            color: #2E7D7A; /* Deep teal for headings */
+        }
+        .custom-text {
+            color: #333333; /* Charcoal gray for body text */
+        }
+        .custom-price {
+            color: #D4A017; /* Soft gold for price */
+        }
+        .card-hover:hover {
+            background-color: #B3E5FC; /* Light pastel blue on hover */
+            transition: background-color 0.3s ease;
+        }
+        .image-hover:hover .default-image {
+            display: none;
+        }
+        .image-hover:hover .hover-image {
+            display: block;
+        }
+        .hover-image {
+            display: none;
+        }
+         /* Animation for the Best Seller heading */
+         .animate-heading {
+            animation: fadeScale 1.5s ease-in-out forwards;
+        }
+        @keyframes fadeScale {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* VIDEO CALL SECTION */
+
+        .custom-heading {
+            color: #1A1A1A; /* Deep charcoal for headings */
+        }
+        .custom-text {
+            color: #1A1A1A; /* Deep charcoal for body text */
+        }
+        .custom-input {
+            background-color: #F0F0F0; /* Light gray for inputs */
+            border: 1px solid #D3D3D3;
+            border-radius: 0.375rem;
+        }
+        .custom-button {
+            background-color: #2E7D7A; /* Soft teal for button */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .custom-button:hover {
+            background-color: #E6E6FA; /* Light lavender on hover */
+            color: #2E7D7A;
+            transition: background-color 0.3s ease;
+        }
+        
     </style>
 </head>
+
 <body class="min-h-screen bg-gray-900">
     <!-- Image Carousel Section -->
     <div class="w-full h-screen relative overflow-hidden">
-        <div 
-            id="scrollContainer"
-            class="flex h-full absolute top-0 left-0 transition-transform duration-700 ease-in-out cursor-grab active:cursor-grabbing"
-        >
+        <div id="scrollContainer"
+            class="flex h-full absolute top-0 left-0 transition-transform duration-700 ease-in-out cursor-grab active:cursor-grabbing">
             <!-- Duplicate first image at end for seamless looping -->
             <div class="flex-shrink-0 h-screen w-screen">
-                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&h=1080" 
-                     alt="Slide 1" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&h=1080"
+                    alt="Slide 1" class="w-full h-full object-cover">
             </div>
             <div class="flex-shrink-0 h-screen w-screen">
-                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1920&h=1080" 
-                     alt="Slide 2" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1920&h=1080"
+                    alt="Slide 2" class="w-full h-full object-cover">
             </div>
             <div class="flex-shrink-0 h-screen w-screen">
-                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&h=1080" 
-                     alt="Slide 3" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&h=1080"
+                    alt="Slide 3" class="w-full h-full object-cover">
             </div>
             <div class="flex-shrink-0 h-screen w-screen">
-                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&h=1080" 
-                     alt="Slide 4" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&h=1080"
+                    alt="Slide 4" class="w-full h-full object-cover">
             </div>
             <!-- Extra first image at the end for smooth transition -->
             <div class="flex-shrink-0 h-screen w-screen">
-                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&h=1080" 
-                     alt="Slide 1 Duplicate" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&h=1080"
+                    alt="Slide 1 Duplicate" class="w-full h-full object-cover">
             </div>
         </div>
     </div>
 
     <!-- Shop by Category Section -->
     <div class="container mx-auto py-10 px-4 bg-white font-sans">
-        <h2 class="text-4xl font-bold text-black text-center mb-10">SHOP BY CATEGORY</h2>
+        <h2 class="text-4xl font-bold text-black text-center mb-10 shop-heading">SHOP BY CATEGORY</h2>
         <div class="flex justify-center items-center space-x-6">
             <!-- Gown Card -->
             <a href="https://example.com/gowns" target="_blank" class="block w-48 h-72 bg-gray-100 rounded-lg overflow-hidden shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 relative">
-                <img src="https://github.com/vaishnavipsreedhar/KalasaStudio/blob/main/Gown%20-%20Copy.png?raw=true" alt="Gown" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
+                <img src="images/Gown.avif" alt="Gown" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
                 <div class="absolute bottom-0 w-full bg-white bg-opacity-90 text-center py-3">
                     <p class="text-xl font-semibold">GOWN</p>
                 </div>
@@ -98,7 +237,7 @@
 
             <!-- Lehenga Card -->
             <a href="https://example.com/lehengas" target="_blank" class="block w-48 h-72 bg-gray-100 rounded-lg overflow-hidden shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 relative">
-                <img src="https://github.com/vaishnavipsreedhar/KalasaStudio/blob/main/lehanga%20-%20Copy.png?raw=true" alt="Lehenga" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
+                <img src="images/lehanga.avif" alt="Lehenga" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
                 <div class="absolute bottom-0 w-full bg-white bg-opacity-90 text-center py-3">
                     <p class="text-xl font-semibold">LEHANGA</p>
                 </div>
@@ -106,7 +245,7 @@
 
             <!-- Coordset Card -->
             <a href="cordset-varieties.html" target="_blank" class="block w-48 h-72 bg-gray-100 rounded-lg overflow-hidden shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 relative">
-                <img src="https://github.com/vaishnavipsreedhar/KalasaStudio/blob/main/Cordset.png?raw=true" alt="Coordset" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
+                <img src="images/Cordset.avif" alt="Coordset" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
                 <div class="absolute bottom-0 w-full bg-white bg-opacity-90 text-center py-3">
                     <p class="text-xl font-semibold">COORDSET</p>
                 </div>
@@ -114,21 +253,200 @@
 
             <!-- Saree Card -->
             <a href="saree-varieties.html" class="block w-48 h-72 bg-gray-100 rounded-lg overflow-hidden shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 relative">
-                <img src="https://github.com/vaishnavipsreedhar/KalasaStudio/blob/main/Saree%20(2)%20-%20Copy.png?raw=true" alt="Saree" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
+                <img src="images/Saree.avif" alt="Saree" class="w-full h-full object-cover transition-transform duration-300 ease-in-out">
                 <div class="absolute bottom-0 w-full bg-white bg-opacity-90 text-center py-3">
                     <p class="text-xl font-semibold">SAREE</p>
                 </div>
             </a>
         </div>
     </div>
+
+    <!-- Cursor Effect -->
+    <div class="cursor" id="cursor"></div>
+
+
+    <!----------------------------------------- New Banner Section with Increased Vertical Margin ------------------------------------>
+    <div class="w-full my-20">
+        <img src="attached2.png" alt="Rent Wear Repeat Banner" class="w-full h-auto object-cover">
+    </div>
+
+
+    <!------------------------------------------------ VIDEOS SECTION AFTER BANNER --------------------------------------------------->
+
+    <div class="font-sans bg-[#FFF8E8] min-h-screen">
+        <div class="container mx-auto p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-40">
+                <!-- Product Card 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <video class="w-full h-64 object-cover" autoplay loop muted playsinline>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold custom-heading">TRILLIUM</h3>
+                        <p class="text-sm custom-text">Two best friends take the dance floor...</p>
+                        <p class="text-lg font-bold custom-price mt-2">₹ 6,800</p>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <video class="w-full h-64 object-cover" autoplay loop muted playsinline>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold custom-heading">SHADE STAY</h3>
+                        <p class="text-sm custom-text">Elegant evening gown with stunning details.</p>
+                        <p class="text-lg font-bold custom-price mt-2">₹ 12,800</p>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <video class="w-full h-64 object-cover" autoplay loop muted playsinline>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold custom-heading">SILVORA</h3>
+                        <p class="text-sm custom-text">Luxurious dress with a modern twist.</p>
+                        <p class="text-lg font-bold custom-price mt-2">₹ 12,800</p>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <video class="w-full h-64 object-cover" autoplay loop muted playsinline>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold custom-heading">BALLET</h3>
+                        <p class="text-sm custom-text">Graceful and elegant ballet-inspired dress.</p>
+                        <p class="text-lg font-bold custom-price mt-2">₹ 5,800</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-------------------------------------------------- BEST SELLER --------------------------------------------------------------->
+
+
+    <div class="font-sans bg-white min-h-screen">
+        <div class="container mx-auto p-6">
+            <!-- Best Seller Section -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-3xl font-bold custom-heading animate-heading">BEST SELLER</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-2xl custom-heading">←</button>
+                        <button class="text-2xl custom-heading">→</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Product Card 1 -->
+                    <div class="bg-[#F5F5F5] rounded-lg shadow-lg overflow-hidden card-hover image-hover">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1700582992975-0c7d825d4d60?w=300&h=480&fit=crop" alt="AVA Default" class="w-full h-96 object-cover default-image">
+                            <img src="https://images.unsplash.com/photo-1669879257706-0c8c2e0f1d89?w=300&h=480&fit=crop" alt="AVA Hover" class="w-full h-96 object-cover hover-image absolute top-0 left-0">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-semibold custom-heading">AVA</h3>
+                            <p class="text-sm custom-text">From Rs. 7,800.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 2 -->
+                    <div class="bg-[#F5F5F5] rounded-lg shadow-lg overflow-hidden card-hover image-hover">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1682685797660-3d8475554f90?w=300&h=480&fit=crop" alt="MYRA Default" class="w-full h-96 object-cover default-image">
+                            <img src="https://images.unsplash.com/photo-1669879258045-4c5d0e2a50c9?w=300&h=480&fit=crop" alt="MYRA Hover" class="w-full h-96 object-cover hover-image absolute top-0 left-0">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-semibold custom-heading">MYRA</h3>
+                            <p class="text-sm custom-text">From Rs. 8,800.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 3 -->
+                    <div class="bg-[#F5F5F5] rounded-lg shadow-lg overflow-hidden card-hover image-hover">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1668019188407-0a2f2e9d58cb?w=300&h=480&fit=crop" alt="SHEER BLISS Default" class="w-full h-96 object-cover default-image">
+                            <img src="https://images.unsplash.com/photo-1669879257942-831d2d5a81e0?w=300&h=480&fit=crop" alt="SHEER BLISS Hover" class="w-full h-96 object-cover hover-image absolute top-0 left-0">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-semibold custom-heading">SHEER BLISS</h3>
+                            <p class="text-sm custom-text">From Rs. 4,800.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 4 -->
+                    <div class="bg-[#F5F5F5] rounded-lg shadow-lg overflow-hidden card-hover image-hover">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1668019188587-0a2f2e9d58cc?w=300&h=480&fit=crop" alt="CROWN Default" class="w-full h-96 object-cover default-image">
+                            <img src="https://images.unsplash.com/photo-1669879257889-831d2d5a81e5?w=300&h=480&fit=crop" alt="CROWN Hover" class="w-full h-96 object-cover hover-image absolute top-0 left-0">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-semibold custom-heading">CROWN</h3>
+                            <p class="text-sm custom-text">From Rs. 2,500.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--------------------------------------------- VIDEO CALL SECTION ------------------------------------------------------>
     
- <!-- New Banner Section with Increased Vertical Margin -->
- <div class="w-full my-20">
-    <img src="https://github.com/vaishnavipsreedhar/KalasaStudio/blob/main/attachedfnl.png?raw=true" class="w-full h-auto object-cover">
-</div>
+<div class="font-sans bg-white min-h-screen">
+        <div class="container mx-auto p-6">
+            <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold custom-heading mb-6 text-center">Schedule a Video Call Appointment with Us</h2>
+                <form id="appointmentForm" class="space-y-4">
+                    <div>
+                        <input type="text" id="name" name="name" placeholder="Name" class="w-full p-2 custom-input" required>
+                    </div>
+                    <div class="flex space-x-2">
+                        <select id="countryCode" name="countryCode" class="w-1/4 p-2 custom-input">
+                            <option data-country-code="in" value="+91">🇮🇳 +91</option>
+                            <option data-country-code="us" value="+1">🇺🇸 +1</option>
+                            <option data-country-code="uk" value="+44">🇬🇧 +44</option>
+                        </select>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone number" class="w-3/4 p-2 custom-input" required>
+                    </div>
+                    <div>
+                        <label class="block custom-text mb-2">What Are You Looking For?</label>
+                        <div class="space-y-2">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="role" value="bride" class="form-radio" required>
+                                <span class="ml-2 custom-text">I am the Bride</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="role" value="sider" class="form-radio" required>
+                                <span class="ml-2 custom-text">I am a Sider</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block custom-text mb-2">Your Event Date :</label>
+                        <div class="flex space-x-2">
+                            <input type="number" id="day" name="day" placeholder="DD" min="1" max="31" class="w-1/4 p-2 custom-input" required>
+                            <input type="number" id="month" name="month" placeholder="MM" min="1" max="12" class="w-1/4 p-2 custom-input" required>
+                            <input type="number" id="year" name="year" placeholder="YYYY" min="2025" max="2030" class="w-2/4 p-2 custom-input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full custom-button">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
-         document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const scrollContainer = document.getElementById('scrollContainer');
             const totalImages = scrollContainer.children.length;
             let currentIndex = 0;
@@ -239,7 +557,7 @@
                 scrollToIndex(currentIndex);
                 startAutoSlide();
             });
-        
+
 
             // Shop by Category interactivity
             const cards = document.querySelectorAll('a');
@@ -249,6 +567,96 @@
                 });
             });
         });
+
+         // JavaScript to ensure videos play on page load
+         document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                video.play().catch(error => {
+                    console.log("Video playback failed:", error);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.getElementById('cursor');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+
+                let trail = document.createElement('div');
+                trail.className = 'trail';
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                document.body.appendChild(trail);
+
+                setTimeout(() => {
+                    trail.remove();
+                }, 500);
+            });
+
+            // Make cursor grow on hover
+            document.querySelectorAll('a').forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'scale(2)';
+                    cursor.style.backgroundColor = 'rgba(0, 255, 0, 0.8)';
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'scale(1)';
+                    cursor.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+                });
+            });
+        });
+
+        // VIDEO CALL SECTION
+
+
+        document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const countryCode = document.getElementById('countryCode').value;
+            const phone = document.getElementById('phone').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+
+            // Validate date
+            const date = new Date(year, month - 1, day); // month is 0-indexed
+            const isValidDate = date.getFullYear() === parseInt(year) && 
+                               date.getMonth() === parseInt(month - 1) && 
+                               date.getDate() === parseInt(day);
+
+            if (!isValidDate) {
+                alert('Please enter a valid date!');
+                return;
+            }
+
+            // Create appointment data object
+            const appointmentData = {
+                name: name,
+                phoneNumber: `${countryCode}${phone}`,
+                role: role,
+                eventDate: `${day}/${month}/${year}`
+            };
+
+            // Prepare WhatsApp message
+            const clientPhoneNumber = "+919916124105"; // Replace with the client's actual phone number
+            const message = `I want a video call to view (from customer end to client). Details: Name - ${appointmentData.name}, Phone - ${appointmentData.phoneNumber}, Role - ${appointmentData.role}, Event Date - ${appointmentData.eventDate}`;
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${clientPhoneNumber}&text=${encodedMessage}`;
+
+            // Redirect to WhatsApp
+            window.open(whatsappUrl, '_blank');
+
+            // Reset form
+            this.reset();
+        });
     </script>
 </body>
+
 </html>
